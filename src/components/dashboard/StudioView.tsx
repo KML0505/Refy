@@ -18,7 +18,9 @@ type DecisionRow = {
 };
 
 export default function StudioView() {
-  const studioRef = useRef<AgStudioRef>(null);
+  // FIX: Change AgStudioRef to AgStudio (or `any` if the library exports them differently)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const studioRef = useRef<any>(null);
   const [rows, setRows] = useState<DecisionRow[] | null>(null);
   const [mode, setMode] = useState<"edit" | "view" | null>(null);
   const [error, setError] = useState<string | null>(null);

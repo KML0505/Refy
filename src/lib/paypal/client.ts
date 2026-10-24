@@ -29,17 +29,17 @@ export async function getAccessToken(): Promise<string> {
   return cached.token;
 }
 
-export async function paypalFetch(path: string, body?: unknown) {
+export async function paypalFetch(path: string, body?: unknown, method = "POST") {
   const token = await getAccessToken();
   const res = await fetch(`${PAYPAL_BASE}${path}`, {
-    method: "POST",
+    method,
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
     body: body ? JSON.stringify(body) : undefined,
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(`PayPal ${path} failed: ${JSON.stringify(data)}`);
-  return data;
+  const text = await res.text();
+  if (!res.ok) throw new Error(`PayPal ${path} failed (${res.status}): ${text.slice(0, 600)}`);
+  return text ? JSON.parse(text) : {};
 }

@@ -1,0 +1,112 @@
+{
+  "pages": [
+    {
+      "id": "page-1",
+      "widgetLayout": {
+        "0": { "xTrack": 0, "yTrack": 0, "xSpan": 6, "ySpan": 20 },
+        "1": { "xTrack": 6, "yTrack": 0, "xSpan": 6, "ySpan": 20 },
+        "6": { "xTrack": 12, "yTrack": 0, "xSpan": 6, "ySpan": 20 },
+        "8": { "xTrack": 18, "yTrack": 0, "xSpan": 6, "ySpan": 20 },
+        "3": { "xTrack": 0, "yTrack": 20, "xSpan": 12, "ySpan": 25 },
+        "4": { "xTrack": 12, "yTrack": 20, "xSpan": 12, "ySpan": 25 },
+        "5": { "xTrack": 0, "yTrack": 45, "xSpan": 24, "ySpan": 25 }
+      },
+      "widgets": {
+        "0": {
+          "type": "radial-gauge",
+          "dataMapping": {
+            "value": [
+              { "id": "decisions.refundedDollars", "aggregation": "sum" }
+            ]
+          },
+          "format": {
+            "title": { "enabled": true, "text": "Total Refunded ($)" }
+          }
+        },
+        "1": {
+          "type": "radial-gauge",
+          "dataMapping": {
+            "value": [
+              { "id": "decisions.requests", "aggregation": "sum" }
+            ]
+          },
+          "format": {
+            "title": { "enabled": true, "text": "Total Requests" }
+          }
+        },
+        "3": {
+          "type": "column-chart-grouped",
+          "dataMapping": {
+            "categoryKey": [{ "id": "decisions.action" }],
+            "valueKey": [
+              { "id": "decisions.action", "aggregation": "count" }
+            ],
+            "tooltipKey": [],
+            "legendKey": []
+          },
+          "format": {
+            "title": { "enabled": true, "text": "Requests by Action" }
+          }
+        },
+        "4": {
+          "type": "column-chart-grouped",
+          "dataMapping": {
+            "categoryKey": [{ "id": "decisions.item" }],
+            "valueKey": [
+              { "id": "decisions.refundedDollars", "aggregation": "sum" }
+            ],
+            "tooltipKey": [],
+            "legendKey": []
+          },
+          "format": {
+            "title": { "enabled": true, "text": "Refunded ($) by Item" }
+          }
+        },
+        "5": {
+          "type": "grid",
+          "dataMapping": {
+            "cols": [
+              { "id": "decisions.received" },
+              { "id": "decisions.customer" },
+              { "id": "decisions.item" },
+              { "id": "decisions.request" },
+              { "id": "decisions.action" },
+              { "id": "decisions.status" }
+            ]
+          },
+          "format": {
+            "title": { "enabled": true, "text": "Recent Requests" }
+          }
+        },
+        "6": {
+          "type": "pie-chart",
+          "dataMapping": {
+            "categoryKey": [{ "id": "decisions.confidence" }],
+            "valueKey": [
+              { "id": "decisions.requests", "aggregation": "sum" }
+            ],
+            "tooltipKey": []
+          },
+          "format": {
+            "title": { "enabled": true, "text": "Requests by Confidence" }
+          }
+        },
+        "8": {
+          "type": "pie-chart",
+          "dataMapping": {
+            "categoryKey": [{ "id": "decisions.status" }],
+            "valueKey": [
+              { "id": "decisions.status", "aggregation": "count" }
+            ],
+            "tooltipKey": []
+          },
+          "format": {
+            "title": { "enabled": true, "text": "Requests by Status" }
+          }
+        }
+      }
+    }
+  ],
+  "selectedPageId": "page-1",
+  "version": "3.0.0"
+}

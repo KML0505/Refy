@@ -19,6 +19,7 @@ export type CaseInput = {
   orderDetails: string;
   recentRequestCount: number;
   customerMessage: string;
+  subscriptionStatus: string;
 };
 
 const INSTRUCTIONS = `You are a refund triage assistant for a small online merchant.
@@ -47,6 +48,7 @@ export function buildPrompt(input: CaseInput): string {
     `Days since purchase: ${input.daysSincePurchase}`,
     `Order details (JSON): ${input.orderDetails}`,
     `Other requests from this customer in the last 30 days: ${input.recentRequestCount}`,
+    `Customer's subscription: ${input.subscriptionStatus}`,
     `Customer message: """${input.customerMessage}"""`,
   ].join("\n");
 }

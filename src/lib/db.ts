@@ -49,4 +49,13 @@ db.exec(`
     paypal_refund_id TEXT,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS subscriptions (
+    id TEXT PRIMARY KEY,
+    paypal_subscription_id TEXT NOT NULL,
+    customer_email TEXT NOT NULL,
+    plan_name TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'ACTIVE',
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+  );
 `);

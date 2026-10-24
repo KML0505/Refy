@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { refundCapture } from "@/lib/paypal/refunds";
 import { alreadyRefundedCents, checkRefundAllowed } from "./guards";
+import { suspendSubscription } from "@/lib/paypal/subscriptions";
 
 type DecisionRow = {
   id: string;
@@ -47,14 +48,35 @@ export async function approveDecision(
       db.prepare(
         `UPDATE decisions SET status = 'executed', approved_by = ?, amount_cents = ?, paypal_refund_id = ? WHERE id = ?`
       ).run(approvedBy, amount, refund.id ?? null, decisionId);
+    } else if (d.action === "pause_subscription") {
+      const email = (
+        db
+          .prepare("SELECT customer_email FROM orders WHERE id = ?")
+          .get(d.order_id) as { customer_email: string }
+      ).customer_email;
+
+      const sub = db
+        .prepare(
+          `SELECT id, paypal_subscription_id FROM subscriptions
+           WHERE customer_email = ? AND status = 'ACTIVE'
+           ORDER BY created_at DESC LIMIT 1`
+        )
+        .get(email) as { id: string; paypal_subscription_id: string } | undefined;
+      if (!sub) throw new Error("No active subscription found for this customer.");
+
+      await suspendSubscription(sub.paypal_subscription_id, "Paused at the customer's request");
+      db.prepare("UPDATE subscriptions SET status = 'SUSPENDED' WHERE id = ?").run(sub.id);
+      db.prepare("UPDATE decisions SET status = 'executed', approved_by = ? WHERE id = ?").run(
+        approvedBy,
+        decisionId
+      );
     } else {
-      // status_reply, hold, deny, pause_subscription: no PayPal call yet.
+      // status_reply, hold, deny: no PayPal call.
       db.prepare("UPDATE decisions SET status = 'executed', approved_by = ? WHERE id = ?").run(
         approvedBy,
         decisionId
       );
     }
-    db.prepare("UPDATE requests SET status = 'resolved' WHERE id = ?").run(d.request_id);
   } catch (err) {
     // Put it back so the merchant can retry or override.
     db.prepare("UPDATE decisions SET status = 'pending' WHERE id = ?").run(decisionId);

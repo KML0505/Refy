@@ -37,6 +37,13 @@ export async function triageRequest(requestId: string): Promise<Decision> {
     )
     .get(row.customer_email, requestId) as { n: number };
 
+  const sub = db
+    .prepare(
+      `SELECT plan_name, status FROM subscriptions
+       WHERE customer_email = ? ORDER BY created_at DESC LIMIT 1`
+    )
+    .get(row.customer_email) as { plan_name: string; status: string } | undefined;
+
   const purchased = Date.parse(row.order_created_at.replace(" ", "T") + "Z");
   const days = Math.max(0, Math.floor((Date.now() - purchased) / 86_400_000));
 
@@ -48,6 +55,7 @@ export async function triageRequest(requestId: string): Promise<Decision> {
     orderDetails: row.details,
     recentRequestCount: recent.n,
     customerMessage: row.message,
+    subscriptionStatus: sub ? `${sub.plan_name} (${sub.status})` : "none",
   });
 
   let decision: Decision | null = null;

@@ -20,6 +20,7 @@ type Row = {
   customer_name: string;
   item_name: string;
   paid_cents: number;
+  sub_status: string | null;
 };
 
 const money = (c: number | null | undefined) =>
@@ -115,6 +116,7 @@ export default function RequestGrid() {
           <p><strong>Customer message:</strong> {selected.message}</p>
           <p><strong>AI recommends:</strong> {selected.action} ({selected.confidence} confidence)</p>
           <p><strong>Reasoning:</strong> {selected.reasoning}</p>
+          {selected.sub_status && <p><strong>Subscription:</strong> {selected.sub_status}</p>}
           <p><strong>Policy rules used:</strong> {JSON.parse(selected.policy_clauses || "[]").join("; ")}</p>
           <p><strong>Draft reply:</strong> {selected.draft_reply}</p>
 

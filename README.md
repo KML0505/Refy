@@ -1,6 +1,4 @@
 # Refy
 
-
-
-Paypal AI Hackathon
+AI Customer Resolution Desk
 

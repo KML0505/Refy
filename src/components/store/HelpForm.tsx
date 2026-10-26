@@ -28,32 +28,30 @@ export default function HelpForm() {
   }
 
   if (status === "done") {
-    return <p>Thanks, your request was sent. The merchant will review it soon.</p>;
+    return (
+      <div>
+        <span className="badge badge-success">Request sent</span>
+        <p style={{ marginTop: 12, marginBottom: 0 }}>
+          Thanks. The shop owner will review it, and you can follow the outcome on the dashboard.
+        </p>
+      </div>
+    );
   }
 
   return (
-    <div style={{ display: "grid", gap: 12 }}>
-      <label>
-        Order number
-        <input
-          value={orderId}
-          onChange={(e) => setOrderId(e.target.value)}
-          style={{ display: "block", width: "100%", padding: 8 }}
-        />
-      </label>
-      <label>
-        What went wrong?
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          rows={5}
-          style={{ display: "block", width: "100%", padding: 8 }}
-        />
-      </label>
-      <button onClick={submit} disabled={status === "sending"}>
-        {status === "sending" ? "Sending..." : "Send request"}
+    <div style={{ display: "grid", gap: 16 }}>
+      <div>
+        <label htmlFor="order">Order number</label>
+        <input id="order" value={orderId} onChange={(e) => setOrderId(e.target.value)} placeholder="Paste your order number" />
+      </div>
+      <div>
+        <label htmlFor="msg">What went wrong?</label>
+        <textarea id="msg" value={message} onChange={(e) => setMessage(e.target.value)} rows={5} placeholder="Describe the problem" />
+      </div>
+      <button className="btn btn-primary" onClick={submit} disabled={status === "sending"} style={{ justifyContent: "center" }}>
+        {status === "sending" ? "Sending..." : "Submit"}
       </button>
-      {error && <p style={{ color: "crimson" }}>{error}</p>}
+      {error && <p className="error" style={{ margin: 0 }}>{error}</p>}
     </div>
   );
 }

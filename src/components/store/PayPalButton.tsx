@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 declare global {
   interface Window {
@@ -50,6 +51,15 @@ export default function PayPalButton({ productId }: { productId: string }) {
 
         window.paypal
           .Buttons({
+            style: {
+              layout: "vertical",
+              color: "gold",
+              shape: "rect",
+              borderRadius: 8,
+              label: "pay",
+              height: 42,
+              tagline: false,
+            },
             createOrder: async () => {
               const res = await fetch("/api/paypal/create-order", {
                 method: "POST",
@@ -98,16 +108,20 @@ export default function PayPalButton({ productId }: { productId: string }) {
 
   if (message) {
     return (
-      <p>
-        {message} Your order number is <code>{orderId}</code>.
-      </p>
+      <div>
+        <span className="badge badge-success">Payment complete</span>
+        <p style={{ margin: "10px 0 6px" }}>
+          Order number: <code>{orderId}</code>
+        </p>
+        <Link href="/store/help">Report a problem with this order</Link>
+      </div>
     );
   }
 
   return (
-    <div>
+    <div className="pay-box">
       <div ref={containerRef} />
-      {error && <p style={{ color: "crimson" }}>{error}</p>}
+      {error && <p className="error" style={{ margin: "8px 0 0" }}>{error}</p>}
     </div>
   );
 }

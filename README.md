@@ -1,3 +1,5 @@
+## Refy : AI Customer Resolution Desk
+
 ## Run it locally
 
 **Requirements:** Node.js 20 or newer, a free [PayPal developer](https://developer.paypal.com) account with a sandbox app, and an AI API key.

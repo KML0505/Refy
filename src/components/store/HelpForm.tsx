@@ -1,12 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function HelpForm() {
   const [orderId, setOrderId] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get("order");
+    if (id) setOrderId(id);
+  }, []);
 
   async function submit() {
     setError(null);
@@ -43,6 +48,18 @@ export default function HelpForm() {
       <div>
         <label htmlFor="order">Order number</label>
         <input id="order" value={orderId} onChange={(e) => setOrderId(e.target.value)} placeholder="Paste your order number" />
+                <button
+          type="button"
+          className="chip"
+          style={{ marginTop: 8 }}
+          onClick={async () => {
+            try {
+              setOrderId((await navigator.clipboard.readText()).trim());
+            } catch {}
+          }}
+        >
+          Paste from clipboard
+        </button>
       </div>
       <div>
         <label htmlFor="msg">What went wrong?</label>

@@ -34,6 +34,7 @@ export default function PayPalButton({ productId }: { productId: string }) {
   const [message, setMessage] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
@@ -106,18 +107,41 @@ export default function PayPalButton({ productId }: { productId: string }) {
     };
   }, [productId]);
 
+  async function copyOrder() {
+    if (!orderId) return;
+    try {
+      await navigator.clipboard.writeText(orderId);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.prompt("Copy your order number:", orderId);
+    }
+  }
+
   if (message) {
     return (
       <div>
         <span className="badge badge-success">Payment complete</span>
-        <p style={{ margin: "10px 0 6px" }}>
-          Order number: <code>{orderId}</code>
+        <p style={{ margin: "10px 0 6px" }}>Your order number:</p>
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+          <code
+            style={{
+              background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 6,
+              padding: "6px 10px", fontSize: "0.72rem", wordBreak: "break-all",
+            }}
+          >
+            {orderId}
+          </code>
+          <button className="btn" onClick={copyOrder} style={{ padding: "6px 12px" }}>
+            {copied ? "Copied" : "Copy"}
+          </button>
+        </div>
+        <p style={{ margin: "12px 0 0" }}>
+          <Link href={`/store/help?order=${orderId}`}>Report a problem with this order</Link>
         </p>
-        <Link href="/store/help">Report a problem with this order</Link>
       </div>
     );
   }
-
   return (
     <div className="pay-box">
       <div ref={containerRef} />

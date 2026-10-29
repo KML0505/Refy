@@ -76,10 +76,15 @@ export default function RequestGrid() {
   const [amount, setAmount] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   const load = useCallback(async () => {
-    const res = await fetch("/api/decisions", { cache: "no-store" });
-    if (res.ok) setRows(await res.json());
+    try {
+      const res = await fetch("/api/decisions", { cache: "no-store" });
+      if (res.ok) setRows(await res.json());
+    } finally {
+      setLoaded(true);
+    }
   }, []);
 
   useEffect(() => {

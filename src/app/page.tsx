@@ -28,7 +28,7 @@ export default function Home() {
           <div style={{ display: "grid", gap: 40, alignItems: "center", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))" }}>
             <Reveal>
               <div className="eyebrow">See it work</div>
-              <h2 style={{ fontSize: "1.5rem" }}>From complaint to refund in four steps</h2>
+              <h2 style={{ fontSize: "1.5rem" }}>Watch one complaint become a refund</h2>
               <p>
                 A customer complains. {BRAND} reads it, checks the policy, and recommends an action with its reasoning. You
                 approve, and PayPal pays out. Every action needs a person, and the code caps every refund.

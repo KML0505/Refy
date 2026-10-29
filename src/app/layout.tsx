@@ -12,7 +12,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: `${BRAND}: ${TAGLINE}`,
+  title: { default: `${BRAND}: ${TAGLINE}`, template: `%s | ${BRAND}` },
   description: TAGLINE,
 };
 

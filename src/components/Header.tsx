@@ -22,14 +22,7 @@ export default function Header() {
 
         <NavLinks />
 
-        <div className="nav-right">
-          <span className="nav-btn" style={{ cursor: "default" }}>
-            <span className="dot" /> Sandbox · test money
-          </span>
-          <Link href="/store" className="nav-btn">
-            Try the store
-          </Link>
-        </div>
+        <div aria-hidden="true" />
       </div>
     </header>
   );

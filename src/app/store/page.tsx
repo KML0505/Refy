@@ -18,6 +18,7 @@ export default function StorePage() {
         Pay with the PayPal sandbox buyer account (test money only). Afterwards, report a problem with your order and
         watch the AI work through it on the dashboard.
       </p>
+      <p className="muted" style={{ fontSize: "0.82rem" }}>Sandbox demo: test money only, no real payments.</p>
 
       <div style={{ display: "grid", gap: 20, marginTop: 24, gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}>
         {PRODUCTS.map((p) => {

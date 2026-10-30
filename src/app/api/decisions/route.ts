@@ -17,7 +17,9 @@ export async function GET() {
          ORDER BY d.created_at DESC`
       )
       .all();
-    return NextResponse.json(rows);
+    return NextResponse.json(rows, {
+      headers: { "Cache-Control": "no-store, max-age=0" }, 
+    });
   } catch (err) {
     console.error("decisions GET failed:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

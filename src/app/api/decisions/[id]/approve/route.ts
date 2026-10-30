@@ -10,7 +10,7 @@ export async function POST(
     const body = await req.json().catch(() => ({}));
     const override = typeof body.amountCents === "number" ? body.amountCents : undefined;
     await approveDecision(id, "merchant", override);
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, status: "executed", amountCents: override });
   } catch (err) {
     console.error("approve failed:", err);
     return NextResponse.json(

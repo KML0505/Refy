@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
+import { connection, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
 export async function GET() {
+  await connection(); // run on every request, never at build time
   try {
     const rows = db
       .prepare(
@@ -43,4 +44,9 @@ export async function GET() {
     console.error("decisions GET failed:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
+}
+
+// Having a second method keeps this route from being prerendered, like /api/requests.
+export async function POST() {
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }

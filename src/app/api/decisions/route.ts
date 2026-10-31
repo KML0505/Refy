@@ -5,20 +5,39 @@ export async function GET() {
   try {
     const rows = db
       .prepare(
-        `SELECT d.id, d.action, d.amount_cents, d.confidence, d.reasoning,
-                d.policy_clauses, d.draft_reply, d.status, d.created_at,
-                r.message, o.customer_name, o.item_name, o.amount_cents AS paid_cents,
-                (SELECT s.status FROM subscriptions s
+        `SELECT COALESCE(d.id, 'untriaged:' || r.id) AS id,
+                COALESCE(d.action, 'manual_review') AS action,
+                d.amount_cents,
+                COALESCE(d.confidence, 'low') AS confidence,
+                COALESCE(d.reasoning, 'No decision is linked to this request. Review it manually.') AS reasoning,
+                COALESCE(d.policy_clauses, '[]') AS policy_clauses,
+                COALESCE(d.draft_reply, 'Manual review is required. No refund has been issued.') AS draft_reply,
+                CASE
+                  WHEN d.id IS NOT NULL THEN d.status
+                  WHEN r.status IN ('triage_failed', 'triaged') THEN 'triage_failed'
+                  ELSE 'triaging'
+                END AS status,
+                COALESCE(d.created_at, r.created_at) AS created_at,
+                r.message,
+                o.customer_name,
+                o.item_name,
+                o.amount_cents AS paid_cents,
+                (
+                  SELECT s.status
+                  FROM subscriptions s
                   WHERE s.customer_email = o.customer_email
-                  ORDER BY s.created_at DESC LIMIT 1) AS sub_status
-         FROM decisions d
-         JOIN requests r ON r.id = d.request_id
+                  ORDER BY s.created_at DESC
+                  LIMIT 1
+                ) AS sub_status
+         FROM requests r
          JOIN orders o ON o.id = r.order_id
-         ORDER BY d.created_at DESC`
+         LEFT JOIN decisions d ON d.request_id = r.id
+         ORDER BY COALESCE(d.created_at, r.created_at) DESC`
       )
       .all();
+
     return NextResponse.json(rows, {
-      headers: { "Cache-Control": "no-store, max-age=0" }, 
+      headers: { "Cache-Control": "no-store, max-age=0" },
     });
   } catch (err) {
     console.error("decisions GET failed:", err);

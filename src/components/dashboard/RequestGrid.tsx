@@ -98,11 +98,6 @@ export default function RequestGrid() {
               const confirmed = confirmedApprovals.current.get(row.id);
               if (!confirmed) return row;
 
-              if (row.status === "executed") {
-                confirmedApprovals.current.delete(row.id);
-                return row;
-              }
-
               return {
                 ...row,
                 status: "executed",
